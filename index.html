@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema demonstrativo de Controle de Estoque para portfólio.">
+  <title>Controle de Estoque | Portfólio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🚆</div>
+      <div>
+        <strong>Controle de Estoque</strong>
+        <span>Portfólio</span>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-page="dashboard">📊 <span>Dashboard</span></button>
+      <button class="nav-item" data-page="catalogo">📦 <span>Catálogo e Inventário</span></button>
+      <button class="nav-item" data-page="movimentacao">🔄 <span>Lançar Movimentação</span></button>
+      <button class="nav-item" data-page="historico">📜 <span>Histórico</span></button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="demo-badge">DEMO</span>
+      <small>Versão para GitHub Pages</small>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">SISTEMA DE GESTÃO</p>
+        <h1 id="page-title">Dashboard</h1>
+      </div>
+      <div class="user-box">
+        <div class="avatar">LF</div>
+        <div>
+          <strong>Usuário Demonstração</strong>
+          <span>Acesso ao sistema</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <div class="page-intro">
+        <div>
+          <h2>Visão geral do estoque</h2>
+          <p>Acompanhe os principais indicadores e materiais que precisam de atenção.</p>
+        </div>
+        <button class="primary-btn" onclick="navigate('movimentacao')">+ Nova movimentação</button>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon">📦</div>
+          <div><span>Materiais</span><strong id="card-materiais">0</strong></div>
+        </article>
+        <article class="card">
+          <div class="card-icon">⚠️</div>
+          <div><span>Abaixo do ideal</span><strong id="card-baixo">0</strong></div>
+        </article>
+        <article class="card">
+          <div class="card-icon">🚨</div>
+          <div><span>Estoque zerado</span><strong id="card-zerados">0</strong></div>
+        </article>
+        <article class="card">
+          <div class="card-icon">💰</div>
+          <div><span>Valor do estoque</span><strong id="card-valor">R$ 0,00</strong></div>
+        </article>
+      </div>
+
+      <div class="grid-2">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Materiais críticos</h3>
+              <p>Itens com estoque igual ou abaixo do nível ideal.</p>
+            </div>
+            <button class="text-btn" onclick="navigate('catalogo')">Ver inventário →</button>
+          </div>
+          <div id="critical-list" class="critical-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Atividade recente</h3>
+              <p>Últimas movimentações registradas.</p>
+            </div>
+            <button class="text-btn" onclick="navigate('historico')">Ver histórico →</button>
+          </div>
+          <div id="recent-list" class="recent-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="catalogo" class="page">
+      <div class="page-intro">
+        <div>
+          <h2>Catálogo e Inventário de Materiais</h2>
+          <p>Consulte códigos, quantidades, preços e níveis de estoque.</p>
+        </div>
+        <button class="primary-btn" onclick="navigate('movimentacao')">+ Movimentar material</button>
+      </div>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <span>🔎</span>
+            <input id="search-input" type="search" placeholder="Pesquisar por código ou descrição...">
+          </div>
+          <select id="status-filter">
+            <option value="todos">Todos os status</option>
+            <option value="normal">Normal</option>
+            <option value="baixo">Abaixo do ideal</option>
+            <option value="zerado">Zerado</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Ideal</th>
+                <th>Atual</th>
+                <th>Preço unit.</th>
+                <th>Valor total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section id="movimentacao" class="page">
+      <div class="page-intro">
+        <div>
+          <h2>Lançar Movimentação</h2>
+          <p>Registre entradas e saídas e mantenha o inventário atualizado.</p>
+        </div>
+      </div>
+
+      <div class="movement-layout">
+        <section class="panel movement-panel">
+          <div class="tabs">
+            <button class="tab active" data-type="entrada">📥 Entrada</button>
+            <button class="tab" data-type="saida">📤 Saída</button>
+          </div>
+
+          <form id="movement-form">
+            <div class="field">
+              <label for="material-select">Material</label>
+              <select id="material-select" required></select>
+            </div>
+
+            <div class="field">
+              <label for="quantity">Quantidade</label>
+              <input id="quantity" type="number" min="1" step="1" placeholder="Informe a quantidade" required>
+            </div>
+
+            <div class="field">
+              <label for="observation">Observação <span>(opcional)</span></label>
+              <textarea id="observation" rows="4" placeholder="Ex.: Reposição, manutenção, consumo..."></textarea>
+            </div>
+
+            <div id="movement-preview" class="movement-preview"></div>
+
+            <button class="primary-btn full" type="submit">Confirmar movimentação</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Como funciona</h3>
+              <p>Fluxo demonstrativo da aplicação.</p>
+            </div>
+          </div>
+          <ol class="steps">
+            <li><span>1</span><div><strong>Selecione o material</strong><small>Escolha um item do inventário.</small></div></li>
+            <li><span>2</span><div><strong>Informe a quantidade</strong><small>Defina a quantidade da movimentação.</small></div></li>
+            <li><span>3</span><div><strong>Confirme a operação</strong><small>O saldo e o histórico são atualizados.</small></div></li>
+          </ol>
+        </section>
+      </div>
+    </section>
+
+    <section id="historico" class="page">
+      <div class="page-intro">
+        <div>
+          <h2>Histórico de Movimentações</h2>
+          <p>Rastreabilidade das entradas e saídas realizadas no sistema.</p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <span>🔎</span>
+            <input id="history-search" type="search" placeholder="Pesquisar no histórico...">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Código</th>
+                <th>Material</th>
+                <th>Quantidade</th>
+                <th>Saldo anterior</th>
+                <th>Novo saldo</th>
+                <th>Observação</th>
+              </tr>
+            </thead>
+            <tbody id="history-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
